@@ -189,13 +189,18 @@ function finish(payload: Uint8Array, hashOk: boolean, seconds: number, totalLen:
   });
   const blob = new Blob([transferred.bytes as BlobPart], { type: transferred.type });
   const url = URL.createObjectURL(blob);
+  const download = document.createElement("a");
+  download.className = "download";
+  download.href = url;
+  download.download = transferred.name;
+  download.textContent = `Download ${transferred.name}`;
+  result.replaceChildren(heading, metadata, download);
   const shareData: ShareData = { files: [file], title: transferred.name };
-  let saveControl: HTMLAnchorElement | HTMLButtonElement;
   if (navigator.share && navigator.canShare?.(shareData)) {
     const share = document.createElement("button");
     share.type = "button";
-    share.className = "download";
-    share.textContent = `Share / save ${transferred.name}`;
+    share.className = "download secondary";
+    share.textContent = "Share";
     share.addEventListener("click", async () => {
       try {
         await navigator.share(shareData);
@@ -205,16 +210,8 @@ function finish(payload: Uint8Array, hashOk: boolean, seconds: number, totalLen:
         }
       }
     });
-    saveControl = share;
-  } else {
-    const download = document.createElement("a");
-    download.className = "download";
-    download.href = url;
-    download.download = transferred.name;
-    download.textContent = `Download ${transferred.name}`;
-    saveControl = download;
+    result.append(share);
   }
-  result.replaceChildren(heading, metadata, saveControl);
   if (transferred.type.startsWith("image/")) {
     const img = document.createElement("img");
     img.className = "received";

@@ -867,6 +867,12 @@ button.download {
   text-decoration: none;
   overflow-wrap: anywhere;
 }
+button.download.secondary {
+  margin-left: 8px;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--accent);
+}
 .pwa-install {
   width: min(92vw, 480px);
   padding: 14px;
